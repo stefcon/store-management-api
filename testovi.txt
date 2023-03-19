@@ -1,0 +1,8 @@
+Deo 1. testovi:
+python main.py --type authentication --authentication-address http://127.0.0.1:5000 --jwt-secret JWT_SECRET_KEY --roles-field roles --administrator-role admin --customer-role customer --warehouse-role storekeeper 
+
+Deo 2. testovi:
+python main.py --type level3 --with-authentication --authentication-address http://127.0.0.1:5000 --customer-address http://127.0.0.1:5001 --warehouse-address http://127.0.0.1:5002 --administrator-address http://127.0.0.1:5003
+
+Svi testovi:
+python main.py --type all --with-authentication --authentication-address http://127.0.0.1:5000 --jwt-secret JWT_SECRET_KEY --roles-field roles --administrator-role admin --customer-role customer --warehouse-role storekeeper --customer-address http://127.0.0.1:5001 --warehouse-address http://127.0.0.1:5002 --administrator-address http://127.0.0.1:5003

@@ -1,0 +1,43 @@
+Mora da se azuriraju image-i:
+- daemon
+- productsDBMigration
+- customer !!!
+create ime_servera --virtualbox-no-vtx-check ->
+ls -> listanje masina
+ssh ime_servera -> konekcija
+docker swarm init --advertise-addr ip_adresa -> inicijalizacija, host postaje manager
+docker swarm join --token token -> host se pridruzuje klasteru
+docker node ls -> listanje node-ova
+docker swarm join-token manager -> token za joinovanje managera
+docker swarm leave -> napustanje klastera
+docker service create --name ime_servisa --constraint node.labels.uslov --update-delay vreme (npr 10s) --replicas broj_kontejnera --publish portHost:portKontejner ime_image:verzija
+docker service ls -> listanje servisa
+docker ps -> pregled kontejnera koji se izvrsavaju na tom hostu
+docker service inspect --pretty ime_servisa
+docker service scale ime_servisa=broj_replika
+docker service ps ime_servisa -> listanje replika servisa po kontejnerima
+docker container rm id_kontejnera --force -> uklanjanje kontejnera sa hosta
+docker service rm -> izvrstiti na menadzeru i time ukloniti servis
+docker service update --image naziv_image-a ime_servisa
+
+Ukoliko treba update os-a ili docker image-a ili sl, treba staviti taj server nedostupnim
+
+docker node update --availability {drain,active} node_id -> ucniti node nedostupnim,dostupnim
+docker network ls
+docker node update --label-add labela
+
+docker swarm init --advertise-addr 127.0.0.1
+docker stack deploy --compose-file stack.yaml myappstack
+docker swarm leave --force
+
+sudo su -> linux komanda za admina
+cd /var/lib/boot2docker
+vi profile
+dodati u EXTRA-ARGS --insecure-registry adresa_repozitoriuma
+restart manager
+
+docker service create --name registry --replicas 1 --publish 5000:5000 registry:2
+docker tag authentication ip_adresa_repozitorijuma/authentication
+docker push ip_adresa_repozitorijuma/authentication
+docker pull ip_adresa_repozitorijuma/authentication
+docker stack deploy --compose-file putanja ime

@@ -1,0 +1,125 @@
+version: '3'
+
+services:
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - authnet
+      - adminnet
+
+  redis:
+    image: redis
+    networks:
+      - managernet
+      - daemonnet
+
+  authenticationDatabase:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+    healthcheck:
+      test: [ "CMD","mysqladmin","ping","-h","localhost" ]
+      timeout: 10s
+      retries: 10
+    networks:
+      - authnet
+    volumes:
+      - dataAuthentication:/var/lib/mysql
+
+  authenticationDBMigration:
+    image: authenticationdbmigration
+    environment:
+      - DATABASE_URL=authenticationDatabase
+    depends_on:
+      authenticationDatabase:
+        condition: service_healthy
+    networks:
+      - authnet
+
+  authentication:
+    image: authentication
+    environment:
+      - DATABASE_URL=authenticationDatabase
+    depends_on:
+      - authenticationDBMigration
+    ports:
+      - 5000:5000
+    networks:
+      - authnet
+
+  productsDatabase:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+    healthcheck:
+      test: [ "CMD","mysqladmin","ping","-h","localhost" ]
+      timeout: 10s
+      retries: 10
+    networks:
+      - proddaemonnet
+      - adminnet
+      - customernet
+    volumes:
+      - dataProducts:/var/lib/mysql
+
+  productsDBMigration:
+    image: productsdbmigration
+    environment:
+      - DATABASE_URL=productsDatabase
+    depends_on:
+      productsDatabase:
+        condition: service_healthy
+    networks:
+      - adminnet
+
+  storekeeper:
+    image: storekeeper
+    environment:
+      - DATABASE_URL=productsDatabase
+      - REDIS_HOST=redis
+    ports:
+      - 5002:5000
+    networks:
+      - managernet
+
+  customer:
+    image: customer
+    environment:
+      - DATABASE_URL=productsDatabase
+      - REDIS_HOST=redis
+    ports:
+      - 5001:5000
+    networks:
+      - customernet
+
+  daemon:
+    image: daemon
+    environment:
+      - DATABASE_URL=productsDatabase
+      - REDIS_HOST=redis
+    networks:
+      - daemonnet
+      - proddaemonnet
+
+  admin:
+    image: admin
+    environment:
+      - DATABASE_URL=productsDatabase
+      - REDIS_HOST=redis
+    ports:
+      - 5003:5000
+    networks:
+      - adminnet
+
+volumes:
+  dataAuthentication:
+  dataProducts:
+networks:
+  authnet:
+  managernet:
+  daemonnet:
+  proddaemonnet:
+  adminnet:
+  customernet:
