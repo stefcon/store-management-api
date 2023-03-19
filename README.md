@@ -1,6 +1,6 @@
-# Warhouse API in Python using Docker
+# Web Shop API in Python using Docker
 
-Warehouse API made in Python Flask using Docker Swarm. [How to run](#Runing-the-server).
+Web Shop API made in Python Flask using Docker Swarm. [How to run](#Runing-the-server).
 
 There are 3 types of accounts
  - admin
