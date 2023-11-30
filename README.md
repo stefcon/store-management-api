@@ -50,7 +50,13 @@ Storekeeper can upload a file containing new products, thus adding products to d
         }
         ```
  - Storekeeper - Running on port 5001
-    - /update [POST] - Request contains [file like this](https://github.com/DusanTodorovic5/docker-web-shop-api/blob/main/application/testing/temp.csv)
+    - /update [POST] - Request contains file like this:
+      ```csv
+      Category6,Product4,15,10.00
+      Category3,Product5,19,10.01
+      Category5,Product6,17,10.02
+      Category4,Product8,10,10.03
+      ```
  - Daemon - Collecting updates from storekeeper in redis and updates database
  - Customer - Running on port 5003
     - /search?name=<PRODUCT_NAME>&category=<CATEGORY_NAME> [GET]
